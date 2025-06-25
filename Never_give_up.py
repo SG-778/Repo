@@ -106,3 +106,36 @@ def get_user_data(
         "name": data["name"],
         "email": data["email"],
     }
+
+
+
+import sqlite3
+def get_high_earners(min_salary):
+    """Fetch employees with salary above min_salary from employees.db."""
+    if not isinstance(min_salary, (int, float)):
+        raise TypeError("min_salary must be an int or float")
+    if min_salary <= 0:
+        raise ValueError("Number cannot be negative")
+    try:
+        conn = sqlite3.connect("employees.db")
+    except sqlite3.Error:
+        raise ValueError("Database error")
+    cursor = conn.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS employees(
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    department TEXT,
+    salary INTEGER
+    )''')
+    conn.commit()
+    cursor.execute('''INSERT OR IGNORE INTO employees VALUES(?, ?, ?, ?)''',
+                   (1, "Alice", "IT", 60000))
+    cursor.execute('''INSERT OR IGNORE INTO employees VALUES(?, ?, ?, ?)''',
+                   (2, "Bob", "HR", 70000))
+    conn.commit()
+    cursor.execute('SELECT name, salary FROM employees WHERE salary > min_salary')
+    result = cursor.fetchall()
+    conn.close()
+
+
+
