@@ -130,7 +130,6 @@ def get_high_earners(min_salary):
     salary INTEGER
     )"""
     )
-    conn.commit()
     cursor.execute(
         """INSERT OR IGNORE INTO employees VALUES(?, ?, ?, ?)""",
         (1, "Alice", "IT", 60000),
@@ -140,6 +139,12 @@ def get_high_earners(min_salary):
         (2, "Bob", "HR", 70000),
     )
     conn.commit()
-    cursor.execute("SELECT name, salary FROM employees WHERE salary > min_salary")
+    cursor.execute("SELECT name, salary FROM employees WHERE salary > ?", (min_salary))
     result = cursor.fetchall()
+    return result
     conn.close()
+
+
+
+
+
